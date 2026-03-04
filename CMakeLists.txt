@@ -5,20 +5,53 @@ project(PLUGALYZER VERSION 0.0.1)
 set(CMAKE_CXX_STANDARD 20)
 
 # include JUCE from submodule
-add_subdirectory(JUCE)
+
+include(FetchContent)
+
+FetchContent_Declare(
+	auxport
+	GIT_REPOSITORY https://github.com/inpinseptipin/AuxPort
+	GIT_TAG master
+ )
+FetchContent_MakeAvailable(auxport)
+
+FetchContent_Declare(
+	JUCE
+	GIT_REPOSITORY https://github.com/juce-framework/JUCE.git
+	GIT_TAG origin/master
+	GIT_SHALLOW ON
+	FIND_PACKAGE_ARGS 8.0.0 GLOBAL
+)
+FetchContent_MakeAvailable(JUCE)
+
+FetchContent_Declare(
+	json
+	GIT_REPOSITORY https://github.com/nlohmann/json.git
+	GIT_TAG origin/develop
+)
+FetchContent_MakeAvailable(json)
+
+FetchContent_Declare(
+	CLI11
+	GIT_REPOSITORY https://github.com/CLIUtils/CLI11.git
+	GIT_TAG origin/main
+)	
+FetchContent_MakeAvailable(CLI11)
+set(JSON_BuildTests OFF CACHE INTERNAL "")
+set(JSON_Install OFF CACHE INTERNAL "")
+
+
+
 juce_add_console_app(Plugalyzer
     COMPANY_NAME CrushedPixel
     )
 
 # include CLI11 from submodule
-add_subdirectory(CLI11)
-target_include_directories(Plugalyzer PRIVATE CLI11/include)
+target_include_directories(Plugalyzer PRIVATE {$CLI11_SOURCE_DIR}/include)
+target_include_directories(Plugalyzer PRIVATE {$json_SOURCE_DIR}/include)
 
-#include nlohmann/json from submodule
-set(JSON_BuildTests OFF CACHE INTERNAL "")
-set(JSON_Install OFF CACHE INTERNAL "")
-add_subdirectory(json)
-target_include_directories(Plugalyzer PRIVATE json/include)
+
+
 
 target_sources(Plugalyzer
     PRIVATE

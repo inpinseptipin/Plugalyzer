@@ -6,6 +6,9 @@ set(CMAKE_CXX_STANDARD 20)
 
 # include JUCE from submodule
 
+option(AUXPLUG_BUILD_PLUGALYZER_BINARY "Build Plugalyzer Binary " OFF)
+option(AUXPLUG_BUILD_IMPULSERESPONSE_TOOL "Build Generate Impulse Response Tool" OFF)
+
 include(FetchContent)
 
 FetchContent_Declare(
@@ -37,6 +40,18 @@ FetchContent_Declare(
 	GIT_TAG origin/main
 )	
 FetchContent_MakeAvailable(CLI11)
+
+
+
+
+
+
+
+
+
+
+
+if(AUXPLUG_BUILD_PLUGALYZER_BINARY)
 set(JSON_BuildTests OFF CACHE INTERNAL "")
 set(JSON_Install OFF CACHE INTERNAL "")
 
@@ -91,3 +106,27 @@ target_link_libraries(Plugalyzer
     PUBLIC
     juce::juce_recommended_config_flags
     juce::juce_recommended_warning_flags)
+
+
+
+endif(AUXPLUG_BUILD_PLUGALYZER_BINARY)
+
+if(AUXPLUG_BUILD_IMPULSERESPONSE_TOOL)
+	set(IMPULSERESPONSE_TOOLNAME "AuxImpulse")
+	add_executable(
+		${IMPULSERESPONSE_TOOLNAME}
+		Automation/main.cpp
+	)
+
+target_link_libraries(${IMPULSERESPONSE_TOOLNAME}
+	AuxPort
+)
+
+target_include_directories(${IMPULSERESPONSE_TOOLNAME} PUBLIC "${auxport_SOURCE_DIR}/AuxPort")
+
+endif(AUXPLUG_BUILD_IMPULSERESPONSE_TOOL)
+
+
+
+
+
